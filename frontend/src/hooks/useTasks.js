@@ -7,10 +7,23 @@ export function useTasks(query, status, page, pageSize) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+
+  // Debounce the query search parameter to avoid hammering the API on every keystroke
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [query]);
+
   useEffect(() => {
     setLoading(true);
 
-    fetchTasks({ query, status, page, pageSize })
+    fetchTasks({ query: debouncedQuery, status, page, pageSize })
       .then((data) => {
         setTasks(data.items);
         setTotal(data.total);
@@ -21,7 +34,7 @@ export function useTasks(query, status, page, pageSize) {
         setError(err.message);
         setLoading(false);
       });
-  }, [query, status, page, pageSize]);
+  }, [debouncedQuery, status, page, pageSize]);
 
   return { tasks, total, loading, error };
 }
