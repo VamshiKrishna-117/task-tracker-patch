@@ -26,6 +26,10 @@ public class TaskController {
         String query = q == null ? "" : q.trim();
         String searchTerm = "%" + query.toLowerCase() + "%";
 
+        // Validate and clamp pagination parameters
+        page = Math.max(1, page);
+        pageSize = Math.max(1, Math.min(pageSize, 100));
+
         // Parse status filter
         String normalizedStatus = null;
         if (status != null && !status.isEmpty()) {
