@@ -14,6 +14,7 @@ export function useTasks(query, status, page, pageSize) {
       .then((data) => {
         setTasks(data.items);
         setTotal(data.total);
+        setError(null);
         setLoading(false);
       })
       .catch((err) => {
